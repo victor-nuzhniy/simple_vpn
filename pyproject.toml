@@ -1,0 +1,80 @@
+[tool.poetry]
+name = "simple-vpn"
+version = "0.1.0"
+description = ""
+authors = ["victro-nuzhniy <nuzhniyva@gmail.com>"]
+readme = "README.md"
+packages = [{include = "simple_vpn"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^4.2.7"
+python-dotenv = "^1.0.0"
+
+
+[tool.poetry.group.lint]
+optional = true
+
+[tool.poetry.group.lint.dependencies]
+black = "^23.11.0"
+flake8 = "^6.1.0"
+flake8-docstrings = "^1.7.0"
+xenon = "^0.9.1"
+isort = "^5.12.0"
+pre-commit = "^3.5.0"
+
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.3"
+pytest-mock = "^3.12.0"
+pytest-sugar = "^0.9.7"
+pytest-cov = "^4.1.0"
+pytest-randomly = "^3.15.0"
+faker = "^20.0.2"
+factory-boy = "^3.3.0"
+pytest-django = "^4.7.0"
+pytest-clarity = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  | dist
+  | .pytest_cache
+  | .tox
+  | docs
+  | docs_src
+  | .venv
+  | .mypy_cache
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_glob = []
+
+[tool.pytest.ini_options]
+# === Pytest ===
+DJANGO_SETTINGS_MODULE = "tests.settings"
+pythonpath = [".", "simple_vpn"]
+norecursedirs = ["env", ".env", "migrations", "venv"]
+testpaths = ["tests",]
+console_output_style = "progress"
+python_files = "test_*"
+python_classes = "Test*"
+python_functions = "test_*"
+
+# === Pytest ===
