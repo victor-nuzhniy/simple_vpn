@@ -23,12 +23,16 @@ class Page(models.Model):
     name = models.CharField(max_length=100, verbose_name="Page name")
     slug = models.SlugField(max_length=100, verbose_name="Page slug")
     personal_site = models.ForeignKey(
-        PersonalSite, models.CASCADE, verbose_name="Personal site"
+        PersonalSite, on_delete=models.CASCADE, verbose_name="Personal site"
     )
     sended = models.FloatField(verbose_name="Sended data")
     loaded = models.FloatField(verbose_name="Loaded data")
     links = models.ManyToManyField(
-        "self", through="PageLinks", verbose_name="Links on page"
+        "self",
+        through="PageLinks",
+        through_fields=("page", "link"),
+        limit_choices_to={"personal_site": personal_site},
+        verbose_name="Links on page",
     )
 
     def __str__(self) -> str:
@@ -39,10 +43,14 @@ class Page(models.Model):
 class PageLinks(models.Model):
     """Model for 'many-to-many' relationships to self Page model."""
 
-    from_page = models.ForeignKey(Page, models.CASCADE, verbose_name="Page with link")
-    to_page = models.ForeignKey(Page, models.CASCADE, verbose_name="Link to page")
+    page = models.ForeignKey(
+        Page, related_name="+", on_delete=models.CASCADE, verbose_name="Page with link"
+    )
+    link = models.ForeignKey(
+        Page, on_delete=models.CASCADE, verbose_name="Link to page"
+    )
     quantity = models.IntegerField(verbose_name="Links was used")
 
     def __str__(self) -> str:
         """Represent model."""
-        return f"From {self.from_page} to {self.to_page}"
+        return f"From {self.page} to {self.link}"
