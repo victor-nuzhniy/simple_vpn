@@ -1,8 +1,14 @@
 """Forms for vpn app."""
 from django import forms
 
+from vpn.models import PersonalSite
 
-class PersonalSiteForm(forms.Form):
+
+class PersonalSiteForm(forms.ModelForm):
     """Form for PersonalSite model."""
 
-    name = forms.CharField(max_length=100, label="Site name")
+    class Meta:
+        """Class Meta for PersonalSiteForm."""
+
+        model = PersonalSite
+        fields = ("name", "slug")
