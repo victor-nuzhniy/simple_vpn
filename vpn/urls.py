@@ -4,9 +4,11 @@ from django.urls import path
 
 from vpn.views import (
     AccountView,
+    CreateSiteView,
     CustomLoginView,
     CustomPasswordChangeView,
     RegisterView,
+    UpdateSiteView,
 )
 
 app_name = "vpn"
@@ -19,4 +21,10 @@ urlpatterns = [
         "password-change/", CustomPasswordChangeView.as_view(), name="password_change"
     ),
     path("account/<int:pk>/", AccountView.as_view(), name="account"),
+    path("create-site/", CreateSiteView.as_view(), name="create_site"),
+    path(
+        "update-site/<int:owner_id>/<str:slug>/",
+        UpdateSiteView.as_view(),
+        name="update_site",
+    ),
 ]
