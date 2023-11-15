@@ -3,24 +3,18 @@ from __future__ import annotations
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.text import slugify
 
 
 class PersonalSite(models.Model):
     """Model for user site."""
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Site owner")
-    name = models.SlugField(max_length=100, verbose_name="Site name")
-    slug = models.CharField(max_length=100, unique=True, verbose_name="Site slug")
+    name = models.CharField(max_length=100, verbose_name="Site name")
+    slug = models.SlugField(max_length=100, unique=True, verbose_name="Site slug")
 
     def __str__(self) -> str:
         """Represent model."""
         return f"{self.owner} {self.name}"
-
-    def save(self, *args, **kwargs) -> None:
-        """Create slug from name."""
-        self.slug = slugify(self.name)
-        return super().save(*args, **kwargs)
 
 
 class Page(models.Model):
