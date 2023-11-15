@@ -1,0 +1,15 @@
+{% extends 'vpn/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="w-100 d-flex flex-column align-items-center">
+        <div class="fs-2">{{ title }}</div>
+        <form method="post" class="d-flex flex-column align-items-center">
+            <div>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit changes</button>
+        </form>
+        <div class="w-100"><a href="{% url 'vpn:password_change' %}">Change password</a></div>
+    </div>
+{% endblock content %}

@@ -2,7 +2,12 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from vpn.views import CustomLoginView, CustomPasswordChangeView, RegisterView
+from vpn.views import (
+    AccountView,
+    CustomLoginView,
+    CustomPasswordChangeView,
+    RegisterView,
+)
 
 app_name = "vpn"
 
@@ -13,4 +18,5 @@ urlpatterns = [
     path(
         "password-change/", CustomPasswordChangeView.as_view(), name="password_change"
     ),
+    path("account/<int:pk>/", AccountView.as_view(), name="account"),
 ]

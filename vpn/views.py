@@ -1,11 +1,16 @@
 """Class and function views for vpn app."""
+from abc import ABC
+
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import CreateView, FormView, UpdateView
+
+from vpn.models import PersonalSite
 
 
 class RegisterView(FormView):
@@ -38,3 +43,27 @@ class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy("vpn:signup")  # TODO for changing
     template_name = "vpn/password_change.html"
     extra_context = {"title": "Password change"}
+
+
+class AccountView(UserPassesTestMixin, UpdateView, ABC):
+    """Update user information."""
+
+    model = User
+    fields = ("username", "email", "first_name", "last_name")
+    template_name = "vpn/account.html"
+    extra_context = {"title": "Personal info"}
+    success_url = reverse_lazy("vpn:sign_up")
+
+    def test_func(self) -> bool:
+        """Test whether user is user."""
+        if self.request.user.is_anonymous:
+            return False
+        return self.request.user.pk == self.kwargs.get("pk")
+
+
+class CreateSiteView(CreateView):
+    """Create site view."""
+
+    model = PersonalSite
+    fields = ("owner", "name")
+    template_name = "vpn/create_personal_site.html"
