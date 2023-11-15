@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView, UpdateView
+from django.views.generic import DeleteView, FormView, UpdateView
 
 from vpn.forms import PersonalSiteForm
 from vpn.models import PersonalSite
@@ -82,9 +82,28 @@ class UpdateSiteView(UserPassesTestMixin, UpdateView, ABC):
     """Update site view."""
 
     model = PersonalSite
-    fields = ("name",)
+    fields = ("name", "slug")
     template_name = "vpn/update_personal_site.html"
     extra_context = {"title": "Update site"}
+    success_url = reverse_lazy("vpn:sign_up")
+
+    def test_func(self) -> bool:
+        """Test whether user is user."""
+        if self.request.user.is_anonymous:
+            return False
+        return self.request.user.pk == self.kwargs.get("owner_id")
+
+    def get_queryset(self):
+        """Return queryset using current user."""
+        return PersonalSite.objects.filter(owner=self.request.user)
+
+
+class DeleteSiteView(UserPassesTestMixin, DeleteView, ABC):
+    """Delete PersonalSite model instance."""
+
+    model = PersonalSite
+    template_name = "vpn/delete_personal_site.html"
+    extra_context = {"title": "Delete site"}
     success_url = reverse_lazy("vpn:sign_up")
 
     def test_func(self) -> bool:
