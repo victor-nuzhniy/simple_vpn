@@ -12,6 +12,11 @@ class PersonalSite(models.Model):
     name = models.CharField(max_length=100, verbose_name="Site name")
     slug = models.SlugField(max_length=100, unique=True, verbose_name="Site slug")
 
+    class Meta:
+        """Class Meta for PersonalSite model."""
+
+        unique_together = ("slug", "owner")
+
     def __str__(self) -> str:
         """Represent model."""
         return f"{self.owner} {self.name}"
@@ -25,14 +30,22 @@ class Page(models.Model):
     personal_site = models.ForeignKey(
         PersonalSite, on_delete=models.CASCADE, verbose_name="Personal site"
     )
-    sended = models.FloatField(verbose_name="Sended data")
-    loaded = models.FloatField(verbose_name="Loaded data")
+    sended = models.FloatField(default=0, verbose_name="Sended data")
+    loaded = models.FloatField(default=0, verbose_name="Loaded data")
+    content = models.TextField(null=True, blank=True, verbose_name="Page content")
     links = models.ManyToManyField(
         "self",
+        null=True,
+        blank=True,
         through="PageLinks",
         through_fields=("page", "link"),
         verbose_name="Links on page",
     )
+
+    class Meta:
+        """Class Meta for Page model."""
+
+        unique_together = ("slug", "personal_site")
 
     def __str__(self) -> str:
         """Represent model."""
@@ -48,7 +61,7 @@ class PageLinks(models.Model):
     link = models.ForeignKey(
         Page, on_delete=models.CASCADE, verbose_name="Link to page"
     )
-    quantity = models.IntegerField(verbose_name="Links was used")
+    quantity = models.IntegerField(default=0, verbose_name="Links was used")
 
     def __str__(self) -> str:
         """Represent model."""
