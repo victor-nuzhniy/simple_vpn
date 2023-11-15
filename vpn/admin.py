@@ -19,6 +19,17 @@ class PageAdmin(admin.ModelAdmin):
     list_display_links = ("id", "name", "personal_site", "sended", "loaded")
     list_filter = ("personal_site",)
 
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        """Change personal_site form field queryset."""
+        form = super().get_form(request, obj, change, **kwargs)
+        form.base_fields["personal_site"].queryset = PersonalSite.objects.filter(
+            owner=request.user
+        )
+        form.base_fields["links"].queryset = Page.objects.filter(
+            personal_site__owner=request.user
+        )
+        return form
+
 
 class PageLinksAdmin(admin.ModelAdmin):
     """PageLinks model admin site configuration."""
