@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, FormView, UpdateView
 
 from vpn.forms import PageCreateForm, PersonalSiteCreateForm
-from vpn.models import PersonalSite
+from vpn.models import Page, PersonalSite
 
 
 class RegisterView(FormView):
@@ -122,7 +122,7 @@ class CreatePageView(LoginRequiredMixin, CreateView):
 
     form_class = PageCreateForm
     template_name = "vpn/page/create_page.html"
-    extra_context = {"title": "Update site"}
+    extra_context = {"title": "Create page"}
     success_url = reverse_lazy("vpn:sign_up")
 
     def get_form_kwargs(self):
@@ -130,3 +130,28 @@ class CreatePageView(LoginRequiredMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs.update({"owner": self.request.user})
         return kwargs
+
+
+class UpdatePageView(UserPassesTestMixin, UpdateView, ABC):
+    """Update Page model instance."""
+
+    form_class = PageCreateForm
+    template_name = "vpn/page/update_page.html"
+    extra_context = {"title": "Update page"}
+    success_url = reverse_lazy("vpn:sign_up")
+
+    def test_func(self) -> bool:
+        """Test whether user is user."""
+        if self.request.user.is_anonymous:
+            return False
+        return self.request.user.pk == self.kwargs.get("owner_id")
+
+    def get_form_kwargs(self):
+        """Set 'owner' kwarg argument to form kwargs."""
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"owner": self.request.user, "slug": self.kwargs.get("slug")})
+        return kwargs
+
+    def get_queryset(self):
+        """Return queryset using current user."""
+        return Page.objects.filter(personal_site__owner=self.request.user)
