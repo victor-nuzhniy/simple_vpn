@@ -2,6 +2,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView
@@ -20,3 +21,12 @@ class RegisterView(FormView):
         user: User = form.save()
         login(self.request, user)
         return super().form_valid(form)
+
+
+class CustomLoginView(LoginView):
+    """Login view."""
+
+    extra_context = {"title": "Sign in"}
+    next_page = "vpn:sign_up"
+    redirect_authenticated_user = True
+    template_name = "vpn/login.html"
