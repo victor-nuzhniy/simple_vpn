@@ -9,9 +9,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, FormView, UpdateView
+from django.views.generic import CreateView, DeleteView, FormView, UpdateView
 
-from vpn.forms import PersonalSiteForm
+from vpn.forms import PageCreateForm, PersonalSiteCreateForm
 from vpn.models import PersonalSite
 
 
@@ -66,7 +66,7 @@ class AccountView(UserPassesTestMixin, UpdateView, ABC):
 class CreateSiteView(LoginRequiredMixin, FormView):
     """Create site view."""
 
-    form_class = PersonalSiteForm
+    form_class = PersonalSiteCreateForm
     template_name = "vpn/personal_site/create_personal_site.html"
     extra_context = {"title": "Create site"}
     success_url = reverse_lazy("vpn:sign_up")
@@ -115,3 +115,18 @@ class DeleteSiteView(UserPassesTestMixin, DeleteView, ABC):
     def get_queryset(self):
         """Return queryset using current user."""
         return PersonalSite.objects.filter(owner=self.request.user)
+
+
+class CreatePageView(LoginRequiredMixin, CreateView):
+    """Create Page model instance."""
+
+    form_class = PageCreateForm
+    template_name = "vpn/page/create_page.html"
+    extra_context = {"title": "Update site"}
+    success_url = reverse_lazy("vpn:sign_up")
+
+    def get_form_kwargs(self):
+        """Set 'owner' kwarg argument to form kwargs."""
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"owner": self.request.user})
+        return kwargs

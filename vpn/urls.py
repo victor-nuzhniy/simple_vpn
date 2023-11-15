@@ -4,6 +4,7 @@ from django.urls import path
 
 from vpn.views import (
     AccountView,
+    CreatePageView,
     CreateSiteView,
     CustomLoginView,
     CustomPasswordChangeView,
@@ -32,5 +33,10 @@ urlpatterns = [
         "delete-site/<int:owner_id>/<str:slug>/",
         DeleteSiteView.as_view(),
         name="delete_site",
+    ),
+    path(
+        "create-page/",
+        CreatePageView.as_view(),
+        name="create_page",
     ),
 ]
