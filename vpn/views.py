@@ -2,7 +2,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView
@@ -30,3 +30,11 @@ class CustomLoginView(LoginView):
     next_page = "vpn:sign_up"
     redirect_authenticated_user = True
     template_name = "vpn/login.html"
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    """Class view for user password changing."""
+
+    success_url = reverse_lazy("vpn:signup")  # TODO for changing
+    template_name = "vpn/password_change.html"
+    extra_context = {"title": "Password change"}
