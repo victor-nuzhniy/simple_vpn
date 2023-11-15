@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.text import slugify
 
 
 class PersonalSite(models.Model):
@@ -15,6 +16,11 @@ class PersonalSite(models.Model):
     def __str__(self) -> str:
         """Represent model."""
         return f"{self.owner} {self.name}"
+
+    def save(self, *args, **kwargs) -> None:
+        """Create slug from name."""
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
 
 class Page(models.Model):
