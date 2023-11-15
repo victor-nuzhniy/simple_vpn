@@ -1,5 +1,6 @@
 """Admin site configuration for vpn app."""
 from django.contrib import admin
+from django.db.models import Q
 
 from vpn.models import Page, PageLinks, PersonalSite
 
@@ -15,7 +16,7 @@ class PersonalSiteAdmin(admin.ModelAdmin):
 class PageAdmin(admin.ModelAdmin):
     """Page model admin site configuration."""
 
-    list_display = ("id", "name", "personal_site", "sended", "loaded")
+    list_display = ("id", "name", "slug", "personal_site", "sended", "loaded")
     list_display_links = ("id", "name", "personal_site", "sended", "loaded")
     list_filter = ("personal_site",)
 
@@ -23,11 +24,12 @@ class PageAdmin(admin.ModelAdmin):
         """Change personal_site form field queryset."""
         form = super().get_form(request, obj, change, **kwargs)
         form.base_fields["personal_site"].queryset = PersonalSite.objects.filter(
-            owner=request.user
+            owner=obj.personal_site.owner
         )
-        form.base_fields["links"].queryset = Page.objects.filter(
-            personal_site__owner=request.user
-        )
+        if links := form.base_fields.get("links"):
+            links.queryset = Page.objects.filter(
+                personal_site__owner=obj.personal_site.owner,
+            ).filter(~Q(slug__in=[obj.slug]))
         return form
 
 
