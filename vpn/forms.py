@@ -1,5 +1,6 @@
 """Forms for vpn app."""
 from django import forms
+from django.db.models import Q
 
 from vpn.models import Page, PersonalSite
 
@@ -21,16 +22,17 @@ class PageCreateForm(forms.ModelForm):
         """Class Meta for PageCreateForm."""
 
         model = Page
-        fields = "__all__"
+        exclude = ("sended", "loaded")
 
     def __init__(self, *args, **kwargs) -> None:
         """Customize personal_site and links fields querysets."""
-        owner = kwargs.pop("owner")
+        owner = kwargs.pop("owner", None)
+        slug = kwargs.pop("slug", None)
         super(PageCreateForm, self).__init__(*args, **kwargs)
         if owner:
-            self.fields["personal_site"].queryset = PersonalSite.objects.filter(
-                owner=owner
-            )
-            self.fields["links"].queryset = Page.objects.filter(
-                personal_site__owner=owner
-            )
+            personal_site_queryset = PersonalSite.objects.filter(owner=owner)
+            links_queryset = Page.objects.filter(personal_site__owner=owner)
+            if slug:
+                links_queryset = links_queryset.filter(~Q(slug__in=[slug]))
+            self.fields["personal_site"].queryset = personal_site_queryset
+            self.fields["links"].queryset = links_queryset
