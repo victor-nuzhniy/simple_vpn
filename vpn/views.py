@@ -19,7 +19,7 @@ class RegisterView(FormView):
     """View for user registration."""
 
     form_class = UserCreationForm
-    template_name = "vpn/user_creation_form.html"
+    template_name = "vpn/auth/user_creation_form.html"
     extra_context = {"title": "Sign up"}
     success_url = reverse_lazy("vpn:sign_up")
 
@@ -36,14 +36,14 @@ class CustomLoginView(LoginView):
     extra_context = {"title": "Sign in"}
     next_page = "vpn:sign_up"
     redirect_authenticated_user = True
-    template_name = "vpn/login.html"
+    template_name = "vpn/auth/login.html"
 
 
 class CustomPasswordChangeView(PasswordChangeView):
     """Class view for user password changing."""
 
     success_url = reverse_lazy("vpn:signup")  # TODO for changing
-    template_name = "vpn/password_change.html"
+    template_name = "vpn/auth/password_change.html"
     extra_context = {"title": "Password change"}
 
 
@@ -67,7 +67,7 @@ class CreateSiteView(LoginRequiredMixin, FormView):
     """Create site view."""
 
     form_class = PersonalSiteForm
-    template_name = "vpn/create_personal_site.html"
+    template_name = "vpn/personal_site/create_personal_site.html"
     extra_context = {"title": "Create site"}
     success_url = reverse_lazy("vpn:sign_up")
 
@@ -83,7 +83,7 @@ class UpdateSiteView(UserPassesTestMixin, UpdateView, ABC):
 
     model = PersonalSite
     fields = ("name", "slug")
-    template_name = "vpn/update_personal_site.html"
+    template_name = "vpn/personal_site/update_personal_site.html"
     extra_context = {"title": "Update site"}
     success_url = reverse_lazy("vpn:sign_up")
 
@@ -102,7 +102,7 @@ class DeleteSiteView(UserPassesTestMixin, DeleteView, ABC):
     """Delete PersonalSite model instance."""
 
     model = PersonalSite
-    template_name = "vpn/delete_personal_site.html"
+    template_name = "vpn/personal_site/delete_personal_site.html"
     extra_context = {"title": "Delete site"}
     success_url = reverse_lazy("vpn:sign_up")
 
