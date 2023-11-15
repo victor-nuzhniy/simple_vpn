@@ -1,0 +1,28 @@
+{% extends 'vpn/base.html' %}
+{% load static %}
+{% block content %}
+<div class="w-100 d-flex flex-column align-items-center">
+    <div class="w-100 d-flex flex-column align-items-center mt-3" style="max-width: 400px;">
+        <div class="w-100 fs-2 d-flex flex-row justify-content-between align-items-center">
+            <div>Site name:</div>
+            <div>{{ page.personal_site.name }}</div>
+        </div>
+        <div class="w-100 fs-3 d-flex flex-row justify-content-between align-items-center">
+            <div>Page name:</div>
+            <div>{{ title }}</div>
+        </div>
+        <div class="fs-5 text-secondary my-3">Links to other pages</div>
+        <div class="w-100 d-flex flex-column">
+            {% for link in links %}
+                <a class="my-2" href="{% url 'vpn:page' link.personal_site.slug link.slug %}">
+                    link to site <b>{{ link.personal_site.name }}</b> page <b>{{ link.name }}</b>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="fs-2 my-3">Page content</div>
+    {% autoescape off %}
+        <div class="w-100 px-2">{{ page.content }}</div>
+    {% endautoescape %}
+</div>
+{% endblock content %}

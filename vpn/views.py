@@ -7,12 +7,19 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, FormView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    FormView,
+    UpdateView,
+)
 
 from vpn.forms import PageCreateForm, PersonalSiteCreateForm
-from vpn.models import Page, PersonalSite
+from vpn.models import Page, PageLinks, PersonalSite
 
 
 class RegisterView(FormView):
@@ -174,3 +181,27 @@ class DeletePageView(UserPassesTestMixin, DeleteView, ABC):
     def get_queryset(self):
         """Return queryset using current user."""
         return Page.objects.filter(personal_site__owner=self.request.user)
+
+
+class PageView(DetailView):
+    """Get Page model instance."""
+
+    model = Page
+    template_name = "vpn/page/page.html"
+    context_object_name = "page"
+
+    def get_context_data(self, **kwargs) -> Dict:
+        """Get context data."""
+        context = super().get_context_data(**kwargs)
+        page = context["page"]
+        context["title"] = page.name
+        ids = [link.link.id for link in PageLinks.objects.filter(page=page)]
+        links = Page.objects.select_related("personal_site").filter(id__in=ids)
+        context["links"] = links
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        """Get Page queryset using personal site slug."""
+        return Page.objects.select_related("personal_site").filter(
+            personal_site__slug=self.kwargs.get("site_slug")
+        )
