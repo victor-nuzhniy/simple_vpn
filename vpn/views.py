@@ -67,14 +67,14 @@ class CreateSiteView(LoginRequiredMixin, FormView):
     """Create site view."""
 
     form_class = PersonalSiteForm
-    template_name = "vpn/personal_site.html"
+    template_name = "vpn/create_personal_site.html"
     extra_context = {"title": "Create site"}
     success_url = reverse_lazy("vpn:sign_up")
 
     def form_valid(self, form) -> HttpResponseRedirect:
         """Create personal site."""
         data: Dict = form.cleaned_data
-        PersonalSite(owner=self.request.user, name=data.get("name")).save()
+        PersonalSite(**data, owner=self.request.user).save()
         return super().form_valid(form)
 
 
@@ -83,7 +83,7 @@ class UpdateSiteView(UserPassesTestMixin, UpdateView, ABC):
 
     model = PersonalSite
     fields = ("name",)
-    template_name = "vpn/personal_site.html"
+    template_name = "vpn/update_personal_site.html"
     extra_context = {"title": "Update site"}
     success_url = reverse_lazy("vpn:sign_up")
 

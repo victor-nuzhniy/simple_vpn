@@ -1,0 +1,23 @@
+{% extends 'vpn/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="w-100 d-flex flex-column align-items-center">
+        <div class="fs-2">{{ title }}</div>
+        <form method="post" class="d-flex flex-column align-items-center">
+            <div>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <script src="{% static 'vpn/node_modules/slug/slug.js' %}"></script>
+    <script>
+        const slugField = document.getElementById("id_slug")
+        const name = document.getElementById("id_name")
+        name.addEventListener("input", (event) => {
+            const {name, value } = event.target;
+            slugField.setAttribute("value", slug(value));
+        });
+    </script>
+{% endblock content %}
