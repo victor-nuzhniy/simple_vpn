@@ -31,7 +31,6 @@ class Page(models.Model):
         "self",
         through="PageLinks",
         through_fields=("page", "link"),
-        limit_choices_to={"personal_site": personal_site},
         verbose_name="Links on page",
     )
 
