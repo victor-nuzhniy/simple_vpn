@@ -155,3 +155,22 @@ class UpdatePageView(UserPassesTestMixin, UpdateView, ABC):
     def get_queryset(self):
         """Return queryset using current user."""
         return Page.objects.filter(personal_site__owner=self.request.user)
+
+
+class DeletePageView(UserPassesTestMixin, DeleteView, ABC):
+    """Delete Page model instance."""
+
+    model = Page
+    template_name = "vpn/page/delete_page.html"
+    extra_context = {"title": "Delete page"}
+    success_url = reverse_lazy("vpn:sign_up")
+
+    def test_func(self) -> bool:
+        """Test whether user is user."""
+        if self.request.user.is_anonymous:
+            return False
+        return self.request.user.pk == self.kwargs.get("owner_id")
+
+    def get_queryset(self):
+        """Return queryset using current user."""
+        return Page.objects.filter(personal_site__owner=self.request.user)

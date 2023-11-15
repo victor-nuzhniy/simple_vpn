@@ -8,6 +8,7 @@ from vpn.views import (
     CreateSiteView,
     CustomLoginView,
     CustomPasswordChangeView,
+    DeletePageView,
     DeleteSiteView,
     RegisterView,
     UpdatePageView,
@@ -44,5 +45,10 @@ urlpatterns = [
         "update-page/<int:owner_id>/<str:slug>/",
         UpdatePageView.as_view(),
         name="update_page",
+    ),
+    path(
+        "delete-page/<int:owner_id>/<str:slug>/",
+        DeletePageView.as_view(),
+        name="delete_page",
     ),
 ]
