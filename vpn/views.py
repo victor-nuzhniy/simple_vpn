@@ -102,8 +102,7 @@ class CreateSiteView(LoginRequiredMixin, ChangeSuccessURLMixin, FormView):
 class UpdateSiteView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
     """Update site view."""
 
-    model = PersonalSite
-    fields = ("name", "slug")
+    form_class = PersonalSiteCreateForm
     template_name = "vpn/personal_site/update_personal_site.html"
     extra_context = {"title": "Update site"}
     success_url = reverse_lazy("vpn:sign_up")
