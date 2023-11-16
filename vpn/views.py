@@ -19,7 +19,8 @@ from django.views.generic import (
 )
 
 from vpn.forms import PageCreateForm, PersonalSiteCreateForm
-from vpn.models import Page, PageLinks, PersonalSite
+from vpn.models import Page, PersonalSite
+from vpn.utils import add_link_quantity, get_links
 
 
 class RegisterView(FormView):
@@ -195,9 +196,8 @@ class PageView(DetailView):
         context = super().get_context_data(**kwargs)
         page = context["page"]
         context["title"] = page.name
-        ids = [link.link.id for link in PageLinks.objects.filter(page=page)]
-        links = Page.objects.select_related("personal_site").filter(id__in=ids)
-        context["links"] = links
+        context["links"] = get_links(page)
+        add_link_quantity(self.request, page)
         return context
 
     def get_queryset(self) -> QuerySet:
