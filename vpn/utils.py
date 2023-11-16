@@ -9,17 +9,18 @@ def add_link_quantity_and_request_content_length(
     request: HttpRequest, page: Page
 ) -> None:
     """Perform increase link quantity usage."""
-    referer_list = request.META.get("HTTP_REFERER").split("/")
-    ref_page = Page.objects.filter(
-        slug=referer_list[-2], personal_site__slug=referer_list[-3]
-    ).first()
-    if ref_page:
-        if page_links := PageLinks.objects.filter(page=ref_page, link=page).first():
-            page_links.quantity = F("quantity") + 1
-            page_links.save()
-        content_length = request.headers.get("Content-Length")
-        ref_page.loaded = F("loaded") + len(content_length)
-        ref_page.save()
+    if referer := request.META.get("HTTP_REFERER"):
+        referer_list = referer.split("/")
+        ref_page = Page.objects.filter(
+            slug=referer_list[-2], personal_site__slug=referer_list[-3]
+        ).first()
+        if ref_page:
+            if page_links := PageLinks.objects.filter(page=ref_page, link=page).first():
+                page_links.quantity = F("quantity") + 1
+                page_links.save()
+            content_length = request.headers.get("Content-Length")
+            ref_page.loaded = F("loaded") + len(content_length)
+            ref_page.save()
 
 
 def get_links(page: Page) -> QuerySet:
