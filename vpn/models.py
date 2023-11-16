@@ -28,8 +28,8 @@ class Page(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Personal site",
     )
-    sended = models.FloatField(default=0, verbose_name="Sended data")
-    loaded = models.FloatField(default=0, verbose_name="Loaded data")
+    sended = models.BigIntegerField(default=0, verbose_name="Sended data")
+    loaded = models.BigIntegerField(default=0, verbose_name="Loaded data")
     content = models.TextField(null=True, blank=True, verbose_name="Page content")
     links = models.ManyToManyField(
         "self",
