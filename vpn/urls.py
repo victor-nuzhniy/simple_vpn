@@ -23,7 +23,7 @@ urlpatterns = [
     path("", IndexView.as_view(), name="index"),
     path("sign-up/", RegisterView.as_view(), name="sign_up"),
     path("sign-in/", CustomLoginView.as_view(), name="sign_in"),
-    path("logout/", LogoutView.as_view(next_page="vpn:sign_up"), name="logout"),
+    path("logout/", LogoutView.as_view(next_page="vpn:index"), name="logout"),
     path(
         "password-change/", CustomPasswordChangeView.as_view(), name="password_change"
     ),
