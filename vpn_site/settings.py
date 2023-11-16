@@ -5,3 +5,4 @@ from config.settings import *
 SITE_ID = 2
 
 WSGI_APPLICATION = "vpn_site.wsgi.application"
+ROOT_URLCONF = "vpn_site.urls"
