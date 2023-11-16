@@ -5,7 +5,9 @@ from django.http import HttpRequest
 from vpn.models import Page, PageLinks
 
 
-def add_link_quantity(request: HttpRequest, page: Page) -> None:
+def add_link_quantity_and_request_content_length(
+    request: HttpRequest, page: Page
+) -> None:
     """Perform increase link quantity usage."""
     referer_list = request.META.get("HTTP_REFERER").split("/")
     ref_page = Page.objects.filter(
@@ -15,6 +17,9 @@ def add_link_quantity(request: HttpRequest, page: Page) -> None:
         if page_links := PageLinks.objects.filter(page=ref_page, link=page).first():
             page_links.quantity = F("quantity") + 1
             page_links.save()
+        content_length = request.headers.get("Content-Length")
+        ref_page.sended = F("sended") + int(content_length)
+        ref_page.save()
 
 
 def get_links(page: Page) -> QuerySet:
