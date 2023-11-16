@@ -7,17 +7,38 @@
             <form method="post" class="d-flex flex-column align-items-center">
                 <div>
                     {% csrf_token %}
-                    {{ form.as_p }}
+                {% if form.error %}
+                    <div>{{ form.error }}</div>
+                {% endif %}
+                {% for f in form %}
+                    <div class="my-2">{{ f.label }}</div>
+                    <div class="w-100">{{ f }}</div>
+                    {% if f.errors %}
+                        <div>{{ f.errors }}</div>
+                    {% endif %}
+                {% endfor %}
                 </div>
-                <button type="submit" class="btn btn-primary">Submit changes</button>
+                <button type="submit" class="btn btn-primary mt-4">Submit changes</button>
             </form>
-            <div class="w-100"><a href="{% url 'vpn:password_change' %}">Change password</a></div>
+            <div class="w-100 d-flex flex-row">
+                <a class="m-2" href="{% url 'vpn:password_change' %}">
+                    <button class="btn btn-warning">Change password</button>
+                </a>
+                <a class="m-2" href="{% url 'vpn:create_site' %}">
+                    <button class="btn btn-warning">Create personal site</button>
+                </a>
+                <a class="m-2" href="{% url 'vpn:create_page' %}">
+                    <button class="btn btn-warning">Create page</button>
+                </a>
+            </div>
         </div>
         <div class="w-100 d-flex flex-column align-items-center">
             <div class="fs-2 m-2">Personal sites</div>
                 <div class="w-100">
-                    <a href="{% url 'vpn:create_site' %}">Create personal site</a>
-                    <div>Already created sites</div>
+                    <a href="{% url 'vpn:create_site' %}">
+                        <button class="btn btn-warning">Create personal site</button>
+                    </a>
+                    <div class="w-100 text-center fs-4">Already created sites</div>
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
@@ -46,8 +67,10 @@
             </div>
             <div class="fs-2 m-2">Pages</div>
                 <div class="w-100">
-                    <a href="{% url 'vpn:create_page' %}">Create page</a>
-                    <div>Already created pages</div>
+                    <a href="{% url 'vpn:create_page' %}">
+                        <button class="btn btn-warning">Create page</button>
+                    </a>
+                    <div class="w-100 text-center fs-4">Already created pages</div>
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
