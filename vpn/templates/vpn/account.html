@@ -1,7 +1,7 @@
 {% extends 'vpn/base.html' %}
 {% load static %}
 {% block content %}
-    <div class="w-100 m-2 d-flex flex-column align-items-center">
+    <div class="w-100 p-2 d-flex flex-column align-items-center">
         <div class="w-100 d-flex flex-column align-items-center">
             <div class="fs-2">{{ title }}</div>
             <form method="post" class="d-flex flex-column align-items-center">
@@ -57,7 +57,11 @@
                                 <th scope="col">Site name</th>
                                 <th scope="col">Sended</th>
                                 <th scope="col">Loaded</th>
-                                <th scope="col">Links list/transition</th>
+                                <th scope="col">
+                                    <div class="w-100 d-flex flex-row justify-content-between">
+                                        <div>Links list</div><div>Transition</div>
+                                    </div>
+                                </th>
                                 <th scope="col">Update</th>
                                 <th scope="col">Delete</th>
                             </tr>
@@ -67,8 +71,12 @@
                                 {% with forloop.counter as index %}
                                     <tr>
                                         <th scope="row">{{ index }}</th>
-                                        <th>{{ page.name }}</th>
-                                        <th>{{ page.slug }}</th>
+                                        <th><a href="{% url 'vpn:page' page.personal_site.slug page.slug %}">
+                                            {{ page.name }}
+                                        </a></th>
+                                        <th><a href="{% url 'vpn:page' page.personal_site.slug page.slug %}">
+                                            {{ page.slug }}
+                                        </a></th>
                                         <th>{{ page.personal_site.name }}</th>
                                         <th>{{ page.sended }}</th>
                                         <th>{{ page.loaded }}</th>
@@ -76,14 +84,18 @@
                                             <div class="d-flex flex-column">
                                                 {% for link in page.page_links.all %}
                                                 <div class="d-flex flex-row justify-content-between">
-                                                    <div>{{ link.page.name }}</div>
-                                                    <div>{{ link.amount }}</div>
+                                                    <div>{{ link.page }}</div>
+                                                    <div>{{ link.quantity }}</div>
                                                 </div>
                                                 {% endfor %}
                                             </div>
                                         </th>
-                                        <th><a href="{% url 'vpn:update_page' user.id page.slug %}">Click</a></th>
-                                        <th><a href="{% url 'vpn:delete_page' user.id page.slug %}">Click</a></th>
+                                        <th><a href="{% url 'vpn:update_page' user.id page.personal_site.slug page.slug %}">
+                                            Click
+                                        </a></th>
+                                        <th><a href="{% url 'vpn:delete_page' user.id page.personal_site.slug page.slug %}">
+                                            Click
+                                        </a></th>
                                     </tr>
                                 {% endwith %}
                             {% endfor %}
