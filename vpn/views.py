@@ -174,7 +174,10 @@ class UpdatePageView(UserPassesTestMixin, UpdateView, ABC):
 
     def get_queryset(self):
         """Return queryset using current user."""
-        return Page.objects.filter(personal_site__owner=self.request.user)
+        return Page.objects.filter(
+            personal_site__owner=self.request.user,
+            personal_site__slug=self.kwargs.get("site_slug"),
+        )
 
 
 class DeletePageView(UserPassesTestMixin, DeleteView, ABC):
@@ -193,7 +196,10 @@ class DeletePageView(UserPassesTestMixin, DeleteView, ABC):
 
     def get_queryset(self):
         """Return queryset using current user."""
-        return Page.objects.filter(personal_site__owner=self.request.user)
+        return Page.objects.filter(
+            personal_site__owner=self.request.user,
+            personal_site__slug=self.kwargs.get("site_slug"),
+        )
 
 
 class PageView(DetailView):

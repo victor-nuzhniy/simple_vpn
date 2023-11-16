@@ -43,12 +43,12 @@ urlpatterns = [
         name="create_page",
     ),
     path(
-        "update-page/<int:owner_id>/<str:slug>/",
+        "update-page/<int:owner_id>/<str:site_slug>/<str:slug>/",
         UpdatePageView.as_view(),
         name="update_page",
     ),
     path(
-        "delete-page/<int:owner_id>/<str:slug>/",
+        "delete-page/<int:owner_id>/<str:site_slug>/<str:slug>/",
         DeletePageView.as_view(),
         name="delete_page",
     ),
