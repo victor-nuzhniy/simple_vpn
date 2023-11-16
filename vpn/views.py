@@ -15,12 +15,20 @@ from django.views.generic import (
     DeleteView,
     DetailView,
     FormView,
+    TemplateView,
     UpdateView,
 )
 
 from vpn.forms import PageCreateForm, PersonalSiteCreateForm
 from vpn.models import Page, PersonalSite
 from vpn.utils import add_link_quantity_and_request_content_length, get_links
+
+
+class IndexView(TemplateView):
+    """Index view."""
+
+    template_name = "vpn/index.html"
+    extra_context = {"title": "Welcome"}
 
 
 class RegisterView(FormView):

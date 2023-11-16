@@ -10,6 +10,7 @@ from vpn.views import (
     CustomPasswordChangeView,
     DeletePageView,
     DeleteSiteView,
+    IndexView,
     PageView,
     RegisterView,
     UpdatePageView,
@@ -19,6 +20,7 @@ from vpn.views import (
 app_name = "vpn"
 
 urlpatterns = [
+    path("", IndexView.as_view(), name="index"),
     path("sign-up/", RegisterView.as_view(), name="sign_up"),
     path("sign-in/", CustomLoginView.as_view(), name="sign_in"),
     path("logout/", LogoutView.as_view(next_page="vpn:sign_up"), name="logout"),
