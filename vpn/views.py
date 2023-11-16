@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.db.models import QuerySet
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -223,3 +223,9 @@ class PageView(DetailView):
         return Page.objects.select_related("personal_site").filter(
             personal_site__slug=self.kwargs.get("site_slug")
         )
+
+    def render_to_response(self, context, **response_kwargs) -> HttpResponse:
+        """Add header with page id."""
+        response = super().render_to_response(context, **response_kwargs)
+        response.headers["page_id"] = context["page"].id
+        return response
