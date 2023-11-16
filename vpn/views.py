@@ -1,10 +1,9 @@
 """Class and function views for vpn app."""
-from abc import ABC
 from typing import Dict
 
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.db.models import QuerySet
@@ -20,6 +19,7 @@ from django.views.generic import (
 )
 
 from vpn.forms import PageCreateForm, PersonalSiteCreateForm
+from vpn.mixins import ChangeSuccessURLMixin, CustomUserPassesTestMixin
 from vpn.models import Page, PersonalSite
 from vpn.utils import add_link_quantity_and_request_content_length, get_links
 
@@ -31,7 +31,7 @@ class IndexView(TemplateView):
     extra_context = {"title": "Welcome"}
 
 
-class RegisterView(FormView):
+class RegisterView(ChangeSuccessURLMixin, FormView):
     """View for user registration."""
 
     form_class = UserCreationForm
@@ -45,14 +45,8 @@ class RegisterView(FormView):
         login(self.request, user)
         return super().form_valid(form)
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class CustomLoginView(LoginView):
+class CustomLoginView(ChangeSuccessURLMixin, LoginView):
     """Login view."""
 
     extra_context = {"title": "Sign in"}
@@ -60,28 +54,16 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     template_name = "vpn/auth/login.html"
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class CustomPasswordChangeView(PasswordChangeView):
+class CustomPasswordChangeView(ChangeSuccessURLMixin, PasswordChangeView):
     """Class view for user password changing."""
 
     success_url = reverse_lazy("vpn:signup")  # TODO for changing
     template_name = "vpn/auth/password_change.html"
     extra_context = {"title": "Password change"}
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class AccountView(UserPassesTestMixin, UpdateView, ABC):
+class AccountView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
     """Update user information."""
 
     model = User
@@ -101,20 +83,8 @@ class AccountView(UserPassesTestMixin, UpdateView, ABC):
         )
         return context
 
-    def test_func(self) -> bool:
-        """Test whether user is user."""
-        if self.request.user.is_anonymous:
-            return False
-        return self.request.user.pk == self.kwargs.get("pk")
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
-
-
-class CreateSiteView(LoginRequiredMixin, FormView):
+class CreateSiteView(LoginRequiredMixin, ChangeSuccessURLMixin, FormView):
     """Create site view."""
 
     form_class = PersonalSiteCreateForm
@@ -128,14 +98,8 @@ class CreateSiteView(LoginRequiredMixin, FormView):
         PersonalSite(**data, owner=self.request.user).save()
         return super().form_valid(form)
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class UpdateSiteView(UserPassesTestMixin, UpdateView, ABC):
+class UpdateSiteView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
     """Update site view."""
 
     model = PersonalSite
@@ -144,24 +108,12 @@ class UpdateSiteView(UserPassesTestMixin, UpdateView, ABC):
     extra_context = {"title": "Update site"}
     success_url = reverse_lazy("vpn:sign_up")
 
-    def test_func(self) -> bool:
-        """Test whether user is user."""
-        if self.request.user.is_anonymous:
-            return False
-        return self.request.user.pk == self.kwargs.get("owner_id")
-
     def get_queryset(self):
         """Return queryset using current user."""
         return PersonalSite.objects.filter(owner=self.request.user)
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class DeleteSiteView(UserPassesTestMixin, DeleteView, ABC):
+class DeleteSiteView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, DeleteView):
     """Delete PersonalSite model instance."""
 
     model = PersonalSite
@@ -169,24 +121,12 @@ class DeleteSiteView(UserPassesTestMixin, DeleteView, ABC):
     extra_context = {"title": "Delete site"}
     success_url = reverse_lazy("vpn:sign_up")
 
-    def test_func(self) -> bool:
-        """Test whether user is user."""
-        if self.request.user.is_anonymous:
-            return False
-        return self.request.user.pk == self.kwargs.get("owner_id")
-
     def get_queryset(self):
         """Return queryset using current user."""
         return PersonalSite.objects.filter(owner=self.request.user)
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class CreatePageView(LoginRequiredMixin, CreateView):
+class CreatePageView(LoginRequiredMixin, ChangeSuccessURLMixin, CreateView):
     """Create Page model instance."""
 
     form_class = PageCreateForm
@@ -200,26 +140,14 @@ class CreatePageView(LoginRequiredMixin, CreateView):
         kwargs.update({"owner": self.request.user})
         return kwargs
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class UpdatePageView(UserPassesTestMixin, UpdateView, ABC):
+class UpdatePageView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
     """Update Page model instance."""
 
     form_class = PageCreateForm
     template_name = "vpn/page/update_page.html"
     extra_context = {"title": "Update page"}
     success_url = reverse_lazy("vpn:sign_up")
-
-    def test_func(self) -> bool:
-        """Test whether user is user."""
-        if self.request.user.is_anonymous:
-            return False
-        return self.request.user.pk == self.kwargs.get("owner_id")
 
     def get_form_kwargs(self):
         """Set 'owner' kwarg argument to form kwargs."""
@@ -234,14 +162,8 @@ class UpdatePageView(UserPassesTestMixin, UpdateView, ABC):
             personal_site__slug=self.kwargs.get("site_slug"),
         )
 
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
-
-class DeletePageView(UserPassesTestMixin, DeleteView, ABC):
+class DeletePageView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, DeleteView):
     """Delete Page model instance."""
 
     model = Page
@@ -249,24 +171,12 @@ class DeletePageView(UserPassesTestMixin, DeleteView, ABC):
     extra_context = {"title": "Delete page"}
     success_url = reverse_lazy("vpn:sign_up")
 
-    def test_func(self) -> bool:
-        """Test whether user is user."""
-        if self.request.user.is_anonymous:
-            return False
-        return self.request.user.pk == self.kwargs.get("owner_id")
-
     def get_queryset(self):
         """Return queryset using current user."""
         return Page.objects.filter(
             personal_site__owner=self.request.user,
             personal_site__slug=self.kwargs.get("site_slug"),
         )
-
-    def get_success_url(self):
-        """Get success url for redirect."""
-        if self.request.user.is_anonymous:
-            return super().get_success_url()
-        return reverse_lazy("vpn:account", kwargs={"pk": self.request.user.id})
 
 
 class PageView(DetailView):
