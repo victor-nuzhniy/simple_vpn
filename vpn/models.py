@@ -35,7 +35,6 @@ class Page(models.Model):
     content = models.TextField(null=True, blank=True, verbose_name="Page content")
     links = models.ManyToManyField(
         "self",
-        null=True,
         blank=True,
         through="PageLinks",
         through_fields=("page", "link"),
