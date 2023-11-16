@@ -12,11 +12,6 @@ class PersonalSite(models.Model):
     name = models.CharField(max_length=100, verbose_name="Site name")
     slug = models.SlugField(max_length=100, unique=True, verbose_name="Site slug")
 
-    class Meta:
-        """Class Meta for PersonalSite model."""
-
-        unique_together = ("slug", "owner")
-
     def __str__(self) -> str:
         """Represent model."""
         return f"{self.owner} {self.name}"
@@ -28,7 +23,10 @@ class Page(models.Model):
     name = models.CharField(max_length=100, verbose_name="Page name")
     slug = models.SlugField(max_length=100, verbose_name="Page slug")
     personal_site = models.ForeignKey(
-        PersonalSite, on_delete=models.CASCADE, verbose_name="Personal site"
+        PersonalSite,
+        to_field="slug",
+        on_delete=models.CASCADE,
+        verbose_name="Personal site",
     )
     sended = models.FloatField(default=0, verbose_name="Sended data")
     loaded = models.FloatField(default=0, verbose_name="Loaded data")
@@ -44,7 +42,7 @@ class Page(models.Model):
     class Meta:
         """Class Meta for Page model."""
 
-        unique_together = ("slug", "personal_site")
+        unique_together = ["slug", "personal_site"]
 
     def __str__(self) -> str:
         """Represent model."""
