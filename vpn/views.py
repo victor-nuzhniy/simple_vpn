@@ -64,6 +64,18 @@ class AccountView(UserPassesTestMixin, UpdateView, ABC):
     extra_context = {"title": "Personal info"}
     success_url = reverse_lazy("vpn:sign_up")
 
+    def get_context_data(self, **kwargs) -> Dict:
+        """Get context data."""
+        context = super().get_context_data(**kwargs)
+        context["personal_sites"] = PersonalSite.objects.filter(owner=self.request.user)
+        context["pages"] = (
+            Page.objects.select_related("personal_site")
+            .prefetch_related("page_links")
+            .filter(personal_site__owner=self.request.user)
+        )
+
+        return context
+
     def test_func(self) -> bool:
         """Test whether user is user."""
         if self.request.user.is_anonymous:
