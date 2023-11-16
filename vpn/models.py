@@ -46,7 +46,7 @@ class Page(models.Model):
 
     def __str__(self) -> str:
         """Represent model."""
-        return f"{self.name}"
+        return f"{self.personal_site} {self.name}"
 
 
 class PageLinks(models.Model):
@@ -56,7 +56,10 @@ class PageLinks(models.Model):
         Page, related_name="+", on_delete=models.CASCADE, verbose_name="Page with link"
     )
     link = models.ForeignKey(
-        Page, on_delete=models.CASCADE, verbose_name="Link to page"
+        Page,
+        related_name="page_links",
+        on_delete=models.CASCADE,
+        verbose_name="Link to page",
     )
     quantity = models.IntegerField(default=0, verbose_name="Links was used")
 
