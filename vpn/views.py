@@ -215,7 +215,8 @@ class PageView(DetailView):
         page = context["page"]
         context["title"] = page.name
         context["links"] = get_links(page)
-        add_link_quantity_and_request_content_length(self.request, page)
+        if self.request.site.id == 2:
+            add_link_quantity_and_request_content_length(self.request, page)
         return context
 
     def get_queryset(self) -> QuerySet:
@@ -227,5 +228,6 @@ class PageView(DetailView):
     def render_to_response(self, context, **response_kwargs) -> HttpResponse:
         """Add header with page id."""
         response = super().render_to_response(context, **response_kwargs)
-        response.headers["page_id"] = context["page"].id
+        if self.request.site.id == 2:
+            response.headers["page_id"] = context["page"].id
         return response
