@@ -8,6 +8,12 @@ from vpn.models import Page, PersonalSite
 class PersonalSiteCreateForm(forms.ModelForm):
     """Form for PersonalSite model instance creation."""
 
+    def __init__(self, *args, **kwargs):
+        """Rewrite fields styling."""
+        super().__init__(*args, **kwargs)
+        self.fields["name"].widget.attrs["class"] = "custom-input custom-input-height"
+        self.fields["slug"].widget.attrs["class"] = "custom-input custom-input-height"
+
     class Meta:
         """Class Meta for PersonalSiteCreateForm."""
 
@@ -29,6 +35,15 @@ class PageCreateForm(forms.ModelForm):
         owner = kwargs.pop("owner", None)
         slug = kwargs.pop("slug", None)
         super(PageCreateForm, self).__init__(*args, **kwargs)
+        self.fields["name"].widget.attrs["class"] = "custom-input custom-input-height"
+        self.fields["slug"].widget.attrs["class"] = "custom-input custom-input-height"
+        self.fields["personal_site"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
+        self.fields["content"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
+        self.fields["links"].widget.attrs["class"] = "custom-input"
         if owner:
             personal_site_queryset = PersonalSite.objects.filter(owner=owner)
             links_queryset = Page.objects.filter(
