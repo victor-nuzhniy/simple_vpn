@@ -65,7 +65,7 @@ class CustomLoginView(ChangeSuccessURLMixin, LoginView):
 class CustomPasswordChangeView(ChangeSuccessURLMixin, PasswordChangeView):
     """Class view for user password changing."""
 
-    success_url = reverse_lazy("vpn:signup")  # TODO for changing
+    success_url = reverse_lazy("vpn:signup")
     template_name = "vpn/auth/password_change.html"
     extra_context = {"title": "Password change"}
     form_class = CustomPasswordChangeForm
