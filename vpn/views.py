@@ -2,7 +2,6 @@
 from typing import Dict
 
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
@@ -20,6 +19,7 @@ from django.views.generic import (
 
 from vpn.forms import (
     CustomAuthForm,
+    CustomUserCreationForm,
     PageCreateForm,
     PersonalSiteCreateForm,
     UserAccountForm,
@@ -39,12 +39,12 @@ class IndexView(TemplateView):
 class RegisterView(ChangeSuccessURLMixin, FormView):
     """View for user registration."""
 
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     template_name = "vpn/auth/user_creation_form.html"
     extra_context = {"title": "Sign up"}
     success_url = reverse_lazy("vpn:sign_up")
 
-    def form_valid(self, form: UserCreationForm) -> HttpResponseRedirect:
+    def form_valid(self, form: CustomUserCreationForm) -> HttpResponseRedirect:
         """Create new user and login."""
         user: User = form.save()
         login(self.request, user)

@@ -3,7 +3,7 @@
 {% block content %}
     <div class="w-100 d-flex flex-column align-items-center">
         <div class="fs-2">Registration</div>
-        <form method="post" class="d-flex flex-column align-items-center">
+        <form method="post" class="w-100 d-flex flex-column align-items-center" style="max-width: 400px;">
             <div class="w-100">
                 {% csrf_token %}
                 {% if form.error %}
