@@ -25,5 +25,6 @@ def add_link_quantity_and_request_content_length(
 
 def get_links(page: Page) -> QuerySet:
     """Get Page queryset with linkable instances."""
-    ids = [link.link.id for link in PageLinks.objects.filter(page=page)]
+    queryset = PageLinks.objects.filter(page=page).select_related().only("page__id")
+    ids = [link.link.id for link in queryset]
     return Page.objects.select_related("personal_site").filter(id__in=ids)
