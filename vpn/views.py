@@ -18,7 +18,12 @@ from django.views.generic import (
     UpdateView,
 )
 
-from vpn.forms import PageCreateForm, PersonalSiteCreateForm, UserAccountForm
+from vpn.forms import (
+    CustomAuthForm,
+    PageCreateForm,
+    PersonalSiteCreateForm,
+    UserAccountForm,
+)
 from vpn.mixins import ChangeSuccessURLMixin, CustomUserPassesTestMixin
 from vpn.models import Page, PersonalSite
 from vpn.utils import add_link_quantity_and_request_content_length, get_links
@@ -53,6 +58,7 @@ class CustomLoginView(ChangeSuccessURLMixin, LoginView):
     next_page = "vpn:sign_up"
     redirect_authenticated_user = True
     template_name = "vpn/auth/login.html"
+    form_class = CustomAuthForm
 
 
 class CustomPasswordChangeView(ChangeSuccessURLMixin, PasswordChangeView):
