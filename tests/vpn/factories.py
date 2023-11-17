@@ -29,6 +29,7 @@ class UserFactory(BaseModelFactory):
 
         model = User
         exclude = ("personal_site_set",)
+        skip_postgeneration_save = True
 
     username = factory.Faker("user_name")
     first_name = factory.Faker("first_name")
@@ -53,6 +54,7 @@ class PersonalSiteFactory(BaseModelFactory):
         model = PersonalSite
         django_get_or_create = ("owner",)
         exclude = ("page_set",)
+        skip_postgeneration_save = True
 
     owner = factory.SubFactory(UserFactory)
     name = factory.Faker("pystr", min_chars=1, max_chars=100)
@@ -73,6 +75,7 @@ class PageFactory(BaseModelFactory):
         model = Page
         django_get_or_create = ("personal_site",)
         exclude = ("page_links",)
+        skip_postgeneration_save = True
 
     name = factory.Faker("pystr", min_chars=1, max_chars=100)
     slug = factory.Faker("pystr", min_chars=1, max_chars=100)
@@ -95,6 +98,7 @@ class PageLinksFactory(BaseModelFactory):
 
         model = PageLinks
         django_get_or_create = ("page", "link")
+        skip_postgeneration_save = True
 
     page = factory.SubFactory(PageFactory)
     link = factory.SubFactory(PageFactory)
