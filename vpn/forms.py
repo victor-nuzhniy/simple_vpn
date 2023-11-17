@@ -51,10 +51,12 @@ class PageCreateForm(forms.ModelForm):
         ] = "custom-input custom-input-height"
         self.fields["links"].widget.attrs["class"] = "custom-input"
         if owner:
-            personal_site_queryset = PersonalSite.objects.filter(owner=owner)
+            personal_site_queryset = PersonalSite.objects.filter(
+                owner=owner
+            ).select_related("owner")
             links_queryset = Page.objects.filter(
                 personal_site__owner=owner
-            ).select_related("personal_site")
+            ).select_related("personal_site", "personal_site__owner")
             if slug:
                 links_queryset = links_queryset.filter(~Q(slug__in=[slug]))
             self.fields["personal_site"].queryset = personal_site_queryset
