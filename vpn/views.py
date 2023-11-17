@@ -5,7 +5,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, PasswordChangeView
-from django.db.models import QuerySet
+from django.db.models import Prefetch, QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -26,7 +26,7 @@ from vpn.forms import (
     UserAccountForm,
 )
 from vpn.mixins import ChangeSuccessURLMixin, CustomUserPassesTestMixin
-from vpn.models import Page, PersonalSite
+from vpn.models import Page, PageLinks, PersonalSite
 from vpn.utils import add_link_quantity_and_request_content_length, get_links
 
 
@@ -86,7 +86,21 @@ class AccountView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
         context["personal_sites"] = PersonalSite.objects.filter(owner=self.request.user)
         context["pages"] = (
             Page.objects.select_related("personal_site")
-            .prefetch_related("page_links")
+            .prefetch_related(
+                Prefetch(
+                    "page_links",
+                    queryset=PageLinks.objects.select_related().only(
+                        "quantity",
+                        "link",
+                        "page__id",
+                        "page__name",
+                        "page__personal_site__slug",
+                        "page__personal_site__name",
+                        "page__personal_site__owner__id",
+                        "page__personal_site__owner__username",
+                    ),
+                )
+            )
             .filter(personal_site__owner=self.request.user)
         )
         return context
