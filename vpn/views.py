@@ -85,7 +85,16 @@ class AccountView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context["personal_sites"] = PersonalSite.objects.filter(owner=self.request.user)
         context["pages"] = (
-            Page.objects.select_related("personal_site")
+            Page.objects.select_related()
+            .only(
+                "name",
+                "slug",
+                "sended",
+                "loaded",
+                "personal_site__name",
+                "personal_site__slug",
+                "personal_site__owner__username",
+            )
             .prefetch_related(
                 Prefetch(
                     "page_links",
@@ -101,7 +110,7 @@ class AccountView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
                     ),
                 )
             )
-            .filter(personal_site__owner=self.request.user)
+            .filter(personal_site__owner__id=self.request.user.id)
         )
         return context
 
