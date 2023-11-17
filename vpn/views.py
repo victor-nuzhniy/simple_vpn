@@ -18,7 +18,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from vpn.forms import PageCreateForm, PersonalSiteCreateForm
+from vpn.forms import PageCreateForm, PersonalSiteCreateForm, UserAccountForm
 from vpn.mixins import ChangeSuccessURLMixin, CustomUserPassesTestMixin
 from vpn.models import Page, PersonalSite
 from vpn.utils import add_link_quantity_and_request_content_length, get_links
@@ -67,7 +67,7 @@ class AccountView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):
     """Update user information."""
 
     model = User
-    fields = ("username", "email", "first_name", "last_name")
+    form_class = UserAccountForm
     template_name = "vpn/account.html"
     extra_context = {"title": "Personal info"}
     success_url = reverse_lazy("vpn:sign_up")

@@ -1,5 +1,6 @@
 """Forms for vpn app."""
 from django import forms
+from django.contrib.auth.models import User
 from django.db.models import Q
 
 from vpn.models import Page, PersonalSite
@@ -53,3 +54,27 @@ class PageCreateForm(forms.ModelForm):
                 links_queryset = links_queryset.filter(~Q(slug__in=[slug]))
             self.fields["personal_site"].queryset = personal_site_queryset
             self.fields["links"].queryset = links_queryset
+
+
+class UserAccountForm(forms.ModelForm):
+    """Form for User model."""
+
+    class Meta:
+        """Class Meta for UserAccountForm."""
+
+        model = User
+        fields = ("username", "email", "first_name", "last_name")
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Rewrite fields class."""
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
+        self.fields["email"].widget.attrs["class"] = "custom-input custom-input-height"
+        self.fields["first_name"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
+        self.fields["last_name"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
