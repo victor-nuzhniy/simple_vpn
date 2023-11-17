@@ -19,6 +19,7 @@ from django.views.generic import (
 
 from vpn.forms import (
     CustomAuthForm,
+    CustomPasswordChangeForm,
     CustomUserCreationForm,
     PageCreateForm,
     PersonalSiteCreateForm,
@@ -67,6 +68,7 @@ class CustomPasswordChangeView(ChangeSuccessURLMixin, PasswordChangeView):
     success_url = reverse_lazy("vpn:signup")  # TODO for changing
     template_name = "vpn/auth/password_change.html"
     extra_context = {"title": "Password change"}
+    form_class = CustomPasswordChangeForm
 
 
 class AccountView(CustomUserPassesTestMixin, ChangeSuccessURLMixin, UpdateView):

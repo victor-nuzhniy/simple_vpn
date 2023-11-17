@@ -1,6 +1,10 @@
 """Forms for vpn app."""
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    PasswordChangeForm,
+    UserCreationForm,
+)
 from django.contrib.auth.models import User
 from django.db.models import Q
 
@@ -108,5 +112,22 @@ class CustomUserCreationForm(UserCreationForm):
             "class"
         ] = "custom-input custom-input-height"
         self.fields["password2"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    """Customize PasswordChangeForm fields."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Restyle fields classes."""
+        super().__init__(*args, **kwargs)
+        self.fields["old_password"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
+        self.fields["new_password1"].widget.attrs[
+            "class"
+        ] = "custom-input custom-input-height"
+        self.fields["new_password2"].widget.attrs[
             "class"
         ] = "custom-input custom-input-height"
