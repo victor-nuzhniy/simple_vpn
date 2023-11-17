@@ -37,7 +37,6 @@ class UserFactory(BaseModelFactory):
     email = factory.Faker("email")
     is_staff = factory.Faker("pybool")
     is_active = factory.Faker("pybool")
-    date_joined = factory.Faker("date_time")
     personal_site_set = factory.RelatedFactoryList(
         factory="tests.app.factories.PersonalSiteFactory",
         factory_related_name="personal_site_set",

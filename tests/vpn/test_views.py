@@ -8,7 +8,7 @@ from django.test import Client
 from django.urls import reverse
 from faker import Faker
 
-from tests.vpn.factories import PageFactory, PersonalSiteFactory
+from tests.vpn.factories import PageFactory, PageLinksFactory, PersonalSiteFactory
 
 
 @pytest.mark.django_db
@@ -142,3 +142,24 @@ class TestAccountView:
             assert site == expected_sites[i]
         for i, page in enumerate(pages):
             assert page == expected_pages[i]
+
+
+@pytest.mark.django_db
+class TestPageView:
+    """Class for testing PageView."""
+
+    pytestmark = pytest.mark.django_db
+
+    def test_get_method(self, client: Client) -> None:
+        """Test PageView get method."""
+        personal_site = PersonalSiteFactory()
+        page = PageFactory(personal_site=personal_site)
+        page_link = PageLinksFactory(page=page)
+        url = reverse(
+            "vpn:page", kwargs={"site_slug": personal_site.slug, "slug": page.slug}
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        assert response.context["title"] == page.name
+        assert response.context["page"] == page
+        assert response.context["links"][0] == page_link.link
