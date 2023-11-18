@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+    volumes:
+      - ./:/usr/src/app/
+      - static:/usr/src/app/static
+      - gunicorn_socket:/gunicorn_socket
+    ports:
+      - '8000:8000'
+      - '8001:8001'
+    expose:
+      - 8000
+      - 8001
+    env_file:
+      - .env
+
+
+volumes:
+  static:
+  gunicorn_socket:
