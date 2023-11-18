@@ -19,8 +19,9 @@ def add_link_quantity_and_request_content_length(
                 page_links.quantity = F("quantity") + 1
                 page_links.save()
             content_length = request.headers.get("Content-Length")
-            ref_page.loaded = F("loaded") + len(content_length)
-            ref_page.save()
+            if bool(content_length):
+                ref_page.loaded = F("loaded") + len(content_length)
+                ref_page.save()
 
 
 def get_links(page: Page) -> QuerySet:
