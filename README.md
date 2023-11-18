@@ -5,11 +5,22 @@
 ### Sensitive data
 
 1. Create in the project root (or obtain from team member) an `.env` file with 
-environment variables required by application.
-    SECRET_KEY =
-    ALLOWED_HOST=
-    DEBUG=
-
+environment variables required by application (values used as an example)
+    SECRET_KEY = '11'
+    ALLOWED_HOST= localhost 127.0.0.1
+    DEBUG=1
+    POSTGRES_HOST=postgres
+    POSTGRES_PORT=5432
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=postgres
+    POSTGRES_DB=vpn
+    DJANGO_SUPERUSER_USERNAME=admin
+    DJANGO_SUPERUSER_EMAIL=a@a.com
+    DJANGO_SUPERUSER_PASSWORD=admin
+    SITE_NAME_1=simple_site
+    DOMAIN_1=simple_site
+    SITE_NAME_2=vpn_site
+    DOMAIN_2=vpn_site
 ### Performing commits
 
 1. Pre-commit hook installed, settings are in .pre-commit-config.yaml
@@ -45,3 +56,26 @@ There is need to always check amount of test cases and their covering.
 1. To perform created test cases, use command:
 
        pytest --cov
+
+## Running container
+
+### Build container
+
+1. To build the container run command     docker-compose up 
+2. To rebuild the container after some changes  
+
+    docker-compose build --no-cache
+    docker-compose up
+
+### Using application
+
+1. After container successfully run application will be awailable at
+   http://127.0.0.1:8000 and http://127.0.0.1:8001/localhost/ (as vpn version
+   with all features described in task)
+2. To turn on/off vpn mode use links in upper left corner as a login user.
+3. For local running DEBUG in .env should be set to 1 (True) for serving staticfiles
+    by gunicorn.
+
+### Deployment
+
+1. For deployment will be used code version with nginx included.
