@@ -1,6 +1,16 @@
 version: '3.7'
 
 services:
+  postgres:
+    image: 'postgres:12.16-alpine3.18'
+    container_name: vpn_postgres
+    env_file:
+      - .env  # must define POSTGRES_USER, POSTGRES_PASSWORD and POSTGRES_DB
+    volumes:
+      - database-data:/var/lib/postgresql/data/  # persist data
+    ports:
+      - '8778:5432'  # required to access DB from host system
+
   web:
     build:
       context: .
@@ -21,3 +31,4 @@ services:
 volumes:
   static:
   gunicorn_socket:
+  database-data:
