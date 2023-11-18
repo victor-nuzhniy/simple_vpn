@@ -10,6 +10,7 @@ packages = [{include = "simple_vpn"}]
 python = "^3.10"
 django = "^4.2.7"
 python-dotenv = "^1.0.0"
+gunicorn = "^21.2.0"
 
 
 [tool.poetry.group.lint]
