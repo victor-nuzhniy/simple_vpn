@@ -57,6 +57,11 @@ There is need to always check amount of test cases and their covering.
 
        pytest --cov
 
+2. Also db container must be run, and in .env set 
+    
+   POSTGRES_HOST=localhost
+   POSTGRES_PORT=8778
+
 ## Running container
 
 ### Build container
