@@ -28,6 +28,13 @@ while ! python manage.py init_create_superuser 2>&1; do
   sleep 3
 done
 
+echo "Change default created site name and added second one."
+
+while ! python manage.py init_site_operations 2>&1; do
+  echo "Create initial superuser, if it had not been created earlier."
+  sleep 3
+done
+
 echo "Django docker is fully configured successfully."
 
 gunicorn -b unix:/gunicorn_socket/simple_site simple_site.wsgi --workers 3 --bind 0.0.0.0:8000 &
