@@ -8,7 +8,7 @@
 environment variables required by application (values used as an example)
 
 SECRET_KEY = '11'
-ALLOWED_HOST= localhost 127.0.0.1
+ALLOWED_HOSTS = localhost 127.0.0.1
 DEBUG=1
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
