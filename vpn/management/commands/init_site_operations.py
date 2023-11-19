@@ -21,7 +21,7 @@ class Command(BaseCommand):
         if len(sites := Site.objects.all()) == 1:
             sites[0].name = name_1
             sites[0].domain = domain_1
-            sites.save()
+            sites[0].save()
             Site.objects.create(name=name_2, domain=domain_2)
             print("Sites were successfully created!")
         print("Sites are already exist.")
