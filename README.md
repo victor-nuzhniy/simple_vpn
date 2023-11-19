@@ -6,21 +6,23 @@
 
 1. Create in the project root (or obtain from team member) an `.env` file with 
 environment variables required by application (values used as an example)
-    SECRET_KEY = '11'
-    ALLOWED_HOST= localhost 127.0.0.1
-    DEBUG=1
-    POSTGRES_HOST=postgres
-    POSTGRES_PORT=5432
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=postgres
-    POSTGRES_DB=vpn
-    DJANGO_SUPERUSER_USERNAME=admin
-    DJANGO_SUPERUSER_EMAIL=a@a.com
-    DJANGO_SUPERUSER_PASSWORD=admin
-    SITE_NAME_1=simple_site
-    DOMAIN_1=simple_site
-    SITE_NAME_2=vpn_site
-    DOMAIN_2=vpn_site
+
+SECRET_KEY = '11'
+ALLOWED_HOST= localhost 127.0.0.1
+DEBUG=1
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=vpn
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=a@a.com
+DJANGO_SUPERUSER_PASSWORD=admin
+SITE_NAME_1=simple_site
+DOMAIN_1=simple_site
+SITE_NAME_2=vpn_site
+DOMAIN_2=vpn_site
+
 ### Performing commits
 
 1. Pre-commit hook installed, settings are in .pre-commit-config.yaml
@@ -84,3 +86,32 @@ There is need to always check amount of test cases and their covering.
 ### Deployment
 
 1. For deployment will be used code version with nginx included.
+
+## General project installation order.
+
+1. Requirements:
+   - Docker and docker-compose must be installed;
+   - Python 3.10
+
+2. Clone project with command     git clone https://github.com/victor-nuzhniy/simple_vpn.git
+
+3. Create .env file in root directory (content can be copied from chapter 'Sensitive data')
+
+4. In case of running project on Windows OS open docker-entrypoint.sh and add empty line 
+   somewhere, save the file.
+
+5. Create virtual environment (   virtualenv venv    or use similar) and activate it.
+
+6. Install poetry version 1.3.0             pip install poetry==1.3.0
+
+7. Run command     poetry install
+
+8. Run command     docker-compose up
+
+9. Projects will be awailable on http://127.0.0.1:8000
+
+10. To run tests you should:
+    - activate virtual environment;
+    - run command          poetry install --with test;
+    - run command          pytest --cov;
+    
